@@ -1,6 +1,7 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING, Type
-from entity import Entity
-from component_pool import ComponentPool
+from .entity import Entity
+from .component_pool import ComponentPool
 
 if TYPE_CHECKING:
     from system import System
@@ -11,7 +12,7 @@ class EcsAdmin:
         This acts as a container for entities, components, and systems.
     '''
     # These are the systems that will be spun up on initialization. It's recommended to include all systems on start-up.
-    init_systems = [
+    init_systems: list[System] = [
 
     ]
 
@@ -22,16 +23,21 @@ class EcsAdmin:
         self.entity_map: dict[int, Entity] = {}
         self.components: list[Component] = []
         self.singleton_components: dict[Type[SingletonComponent], SingletonComponent] = {}
-        self.systems: list[System] = self._create_systems()
+        time_step_systems, delta_time_systems = self._create_systems()
+        self.time_step_systems: list[System] = time_step_systems
+        self.delta_time_systems: list[System] = delta_time_systems
         self.component_pools: dict[Type[Component], ComponentPool]
 
     def __repr__(self) -> str:
         return str(self.__class__)
 
     # Updates the systems giving it a time_step to determine how long it's been since the last process.
-    def update(self, time_step: float):
-        for system in self.systems:
-            system.update(time_step)
+    def update(self, time_step: float, delta_time: float):
+        for time_step_system in self.time_step_systems:
+            time_step_system.update(time_step)
+
+        for delta_time_system in self.delta_time_systems:
+            delta_time_system.update(delta_time)
 
     # Creates a new component pool or overwrites the previous one if called.
     def create_component_pool(self, component_type: Type[Component]) -> ComponentPool:
@@ -57,8 +63,16 @@ class EcsAdmin:
 
 
     # Creates all of the system on instantiation 
-    def _create_systems(self):
-        return [system(self) for system in self.init_systems]
+    def _create_systems(self) -> tuple[list[System], list[System]]:
+        fixed_systems = []
+        dt_systems = []
+        for system in self.init_systems:
+            if system.uses_time_step:
+                fixed_systems.append(system)
+            else:
+                dt_systems.append(system)
+
+        return fixed_systems, dt_systems
 
     
 

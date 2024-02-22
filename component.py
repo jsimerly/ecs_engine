@@ -1,6 +1,9 @@
 from __future__ import annotations
-from typing import Any, Type
+from typing import Any, Type, TYPE_CHECKING, TypeVar
 from abc import ABC
+
+if TYPE_CHECKING:
+    T = TypeVar('T', bound='SingletonComponent')
 
 class Component(ABC):
     '''
@@ -23,9 +26,9 @@ class SingletonComponent(Component):
     '''
         This is a SingletonComponent as outline by OW's Tim Ford in his GDC 2017 talk. The responsiblity of this component is for when systems and entities need to access the same infomation that is not owned by entities themselves. This prevents Systems from having their own state but instead creates a global state. eg: an InputComponent that stores the users most recent input.
     '''
-    _instances: dict[Type, SingletonComponent]
+    _instances: dict[Type, SingletonComponent] = {}
 
-    def __new__(cls, *args, **kwargs) -> SingletonComponent:
+    def __new__(cls : Type[T], *args, **kwargs) -> T:
         if cls not in cls._instances:
             instance = super(SingletonComponent, cls).__new__(cls)
             cls._instances[cls] = instance

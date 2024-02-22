@@ -1,3 +1,4 @@
+from __future__ import annotations
 from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING, Type
 
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 
 class System(ABC):
     required_components = []
-
+    uses_time_step = True
 
     def __init__(self, ecs_admin: EcsAdmin) -> None:
         self._required_components: list[Type[Component]] = self.required_components
@@ -18,7 +19,7 @@ class System(ABC):
         super().__init__()
     
     @abstractmethod
-    def update(self, time_step: float):
+    def update(self, time: float):
         ...
 
     def notify_component(self):
@@ -56,10 +57,6 @@ class System(ABC):
                     
         return entities
         
-
-    
-
-
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}"
