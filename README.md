@@ -31,7 +31,7 @@ class PositionComponent(Component):
     x: int
     y: int
 
-@class UserComponent(Component):
+class UserComponent(Component):
   ...
 
 @dataclass
