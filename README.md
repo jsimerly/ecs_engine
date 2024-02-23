@@ -1,5 +1,5 @@
 # ECS Engine
-This ECS Engine is a lightweight and dependancyless "Entity Component System" (ECS). ECSs are architectures that is most commonly used in video game because it allows you to manage a lot of concurrent states (components) and mutate these states efficently (systems).  
+This ECS Engine is a lightweight and dependancyless "Entity Component System" (ECS). ECSs are architectures that are most commonly used in video game because it allows you to manage a lot of concurrent states (components) and mutate these states efficently (systems).  
 
 ## Getting Started
 ### Prerequisites
@@ -12,12 +12,12 @@ pip install ecs-engine==0.1
 ```
 
 ### Features
-* ***Entity, Components, System, and Admin***: Includes all of the features needed for a baseline ECS.
-* ***Singleton Component***: A singleton component to manage singular state that is used by 1 or more systems but not owned by any entities. Check out the [GDC talk by Overwatch's Tim Ford](https://www.youtube.com/watch?v=W3aieHjyNvw) for more info.
-* ***Component Pool***: An Object Pool for fast and efficient component creation. As well as using a "Sparse Set" data structure to improve entity caching and entity querying. [More on the Sparse Set here](https://stackoverflow.com/questions/23721645/designs-of-an-entity-component-system).
+* **Entity, Components, System, and Admin**: Includes all of the features needed for a baseline ECS.
+* **Singleton Component**: A singleton component to manage singular state that is used by 1 or more systems but not owned by any entities. Check out the [GDC talk by Overwatch's Tim Ford](https://www.youtube.com/watch?v=W3aieHjyNvw) for more info.
+* **Component Pool**: An Object Pool for fast and efficient component creation. As well as using a "Sparse Set" data structure to improve entity caching and entity querying. [More on the Sparse Set here](https://stackoverflow.com/questions/23721645/designs-of-an-entity-component-system).
 
   <sub>It is worth noting that the sparse set will increase memory overhead in exchange for performance.<sub>
-* ***EventBus***: An event bus to help provide system to system and admin to sysetm communication.
+* **EventBus**: An event bus to help provide system to system and admin to system communication.
 
 
 ### Quick start
@@ -31,7 +31,7 @@ class PositionComponent(Component):
     x: int
     y: int
 
-@class UserComponent(Component):
+class UserComponent(Component):
   ...
 
 @dataclass
@@ -59,7 +59,7 @@ class InputSystem(System):
 
 class World(EcsAdmin):
     init_systems = [UserMovementSystem]
-    events = ['update_time_step']
+    events = ['update_time_step', 'keyboard_input']
 
     def timestep(self, time_step: float):
         self.event_bus.publish('update_time_step', time_step)
@@ -80,9 +80,6 @@ while True:
             
 ```      
           
-            
-
-# About ECS
 ## Why use an ECS?
 ECSs are considered highly performant and encourage decoupling. 
 
@@ -148,3 +145,9 @@ While not always used in ECS systems; this engine here does use events and liste
 
 Ex: In the previous system example you get two exapmles of event system. The system is updated by the time_step that happens every frame in the game. At the end it publishes and event to alert any subscribers that this character may die.
 
+## 
+### Documentation
+Coming Soon
+
+### License 
+ECS Engine is licensed under the MIT License
