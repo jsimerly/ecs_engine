@@ -1,5 +1,5 @@
 # ECS Engine
-This ECS Engine is a lightweight and dependancyless "Entity Component System" (ECS). ECSs are architectures that is most commonly used in video game because it allows you to manage a lot of concurrent states (components) and mutate these states efficently (systems).  
+This ECS Engine is a lightweight and dependancyless "Entity Component System" (ECS). ECSs are architectures that are most commonly used in video game because it allows you to manage a lot of concurrent states (components) and mutate these states efficently (systems).  
 
 ## Getting Started
 ### Prerequisites
