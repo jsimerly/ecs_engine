@@ -59,7 +59,7 @@ class InputSystem(System):
 
 class World(EcsAdmin):
     init_systems = [UserMovementSystem]
-    events = ['update_time_step']
+    events = ['update_time_step', 'keyboard_input']
 
     def timestep(self, time_step: float):
         self.event_bus.publish('update_time_step', time_step)
