@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Any, Type, TYPE_CHECKING, TypeVar
-from abc import ABC
+from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:
     T = TypeVar('T', bound='SingletonComponent')
@@ -9,6 +9,7 @@ class Component(ABC):
     '''
         This is a standard use Abstact Component. Standard Components are using for components that are attached to many entities. eg: a HealthComponent where many entities will have seperate health.
     '''
+
     def serialize(self) -> Any:
         raise NotImplementedError(f'{self.__class__} has not defined a serialize method.')
     
