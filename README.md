@@ -147,7 +147,7 @@ Ex: In the previous system example you get two exapmles of event system. The sys
 
 ## 
 ### Documentation
-Coming Soon
+[Documentation can be found here](https://jsimerly.github.io/ecs_engine/). It's built using sphinx and everything in the documentation can be found in the comments of the source code.
 
 ### License 
 ECS Engine is licensed under the MIT License
