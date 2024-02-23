@@ -145,3 +145,9 @@ While not always used in ECS systems; this engine here does use events and liste
 
 Ex: In the previous system example you get two exapmles of event system. The system is updated by the time_step that happens every frame in the game. At the end it publishes and event to alert any subscribers that this character may die.
 
+## 
+### Documentation
+Coming Soon
+
+### License 
+ECS Engine is licensed under the MIT License
