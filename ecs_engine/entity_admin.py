@@ -6,7 +6,7 @@ from .component_pool import ComponentPool
 from .interfaces import IEcsAdmin
 
 if TYPE_CHECKING:
-    from system import System
+    from ecs_engine.system import System
     from component import Component, SingletonComponent
     T = TypeVar('T', bound=SingletonComponent)
 

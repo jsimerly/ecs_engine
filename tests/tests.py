@@ -1,11 +1,11 @@
 from typing import Any
 import unittest
 from unittest.mock import MagicMock, patch
-from .component import Component, SingletonComponent
-from .entity import Entity
-from .component_pool import ComponentPool
-from .entity_admin import EcsAdmin
-from .system import System, subscribe_to_event
+from ecs_engine.component import Component, SingletonComponent
+from ecs_engine.entity import Entity
+from ecs_engine.component_pool import ComponentPool
+from ecs_engine.entity_admin import EcsAdmin
+from ecs_engine.system import System, subscribe_to_event
 
 class HealthComponent(Component):
     def __init__(self, health):
