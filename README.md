@@ -12,12 +12,12 @@ pip install ecs-engine==0.1
 ```
 
 ### Features
-* ***Entity, Components, System, and Admin***: Includes all of the features needed for a baseline ECS.
-* ***Singleton Component***: A singleton component to manage singular state that is used by 1 or more systems but not owned by any entities. Check out the [GDC talk by Overwatch's Tim Ford](https://www.youtube.com/watch?v=W3aieHjyNvw) for more info.
-* ***Component Pool***: An Object Pool for fast and efficient component creation. As well as using a "Sparse Set" data structure to improve entity caching and entity querying. [More on the Sparse Set here](https://stackoverflow.com/questions/23721645/designs-of-an-entity-component-system).
+* **Entity, Components, System, and Admin**: Includes all of the features needed for a baseline ECS.
+* **Singleton Component**: A singleton component to manage singular state that is used by 1 or more systems but not owned by any entities. Check out the [GDC talk by Overwatch's Tim Ford](https://www.youtube.com/watch?v=W3aieHjyNvw) for more info.
+* **Component Pool**: An Object Pool for fast and efficient component creation. As well as using a "Sparse Set" data structure to improve entity caching and entity querying. [More on the Sparse Set here](https://stackoverflow.com/questions/23721645/designs-of-an-entity-component-system).
 
   <sub>It is worth noting that the sparse set will increase memory overhead in exchange for performance.<sub>
-* ***EventBus***: An event bus to help provide system to system and admin to sysetm communication.
+* **EventBus**: An event bus to help provide system to system and admin to sysetm communication.
 
 
 ### Quick start
