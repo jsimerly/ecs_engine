@@ -127,9 +127,8 @@ class System(ABC):
         if required_component_pools:
             main_pool = required_component_pools.pop()
 
-            for entity_id in main_pool.entity_ids:
+            for entity in main_pool.entities:
                 add_entity = True
-                entity = self.get_entity(entity_id=entity_id)
 
                 for remaining_component in required_component_pools:
                     if not entity.has_component(remaining_component.component_type):

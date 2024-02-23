@@ -28,6 +28,7 @@ class ComponentPool:
         self.active: list[Component] = []
 
         self.entity_ids = [] # the 'dense' array in the sparse set that hold the ids for the entities
+        self.entities: list[Entity] = []
         self.sparse = [-1] * entity_capacity
         self.entity_capacity = entity_capacity
 
@@ -76,6 +77,7 @@ class ComponentPool:
             if self.sparse[entity.id] == -1:
                 self.sparse[entity.id] = len(self.entity_ids)
                 self.entity_ids.append(entity.id)
+                self.entities.append(entity)
         else:
             raise ValueError(f'{entity.__class__.__name__} must have a a {self.component_type.__class__.__name__} component.')
 
@@ -105,9 +107,13 @@ class ComponentPool:
         if self.contains_entity(entity):
             dense_index = self.sparse[entity.id]
             last_entity_id = self.entity_ids[-1]
+            last_entity = self.entities[-1]
 
             self.entity_ids[dense_index] = last_entity_id
+            self.entities[dense_index] = last_entity
+
             self.sparse[last_entity_id] = dense_index
             self.sparse[entity.id] = -1
 
             self.entity_ids.pop()
+            self.entities.pop()

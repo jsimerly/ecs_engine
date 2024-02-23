@@ -185,7 +185,12 @@ class TestComponentPool(unittest.TestCase):
         entity_1._add_component(HealthComponent(100))
         self.component_pool.add_entity(entity_1)
         n_entity_ids = len(self.component_pool.entity_ids)
+        n_entities = len(self.component_pool.entities)
         self.assertEqual(n_entity_ids, 1)
+        self.assertEqual(n_entities, 1)
+
+        expected_entity = self.component_pool.entities[0]
+        self.assertEqual(expected_entity, entity_1)
 
     def test_add_entity_no_component(self):
         entity_1 = Entity()
@@ -217,13 +222,18 @@ class TestComponentPool(unittest.TestCase):
         self.component_pool.remove_entity(entity_2)
 
         entity_id_size = len(self.component_pool.entity_ids)
+        entities_size = len(self.component_pool.entities)
         self.assertEqual(entity_id_size, 1)
+        self.assertEqual(entities_size, 1)
 
         does_contain_entity_1 = self.component_pool.contains_entity(entity_1)
         does_contain_entity_2 = self.component_pool.contains_entity(entity_2)
 
         self.assertTrue(does_contain_entity_1)
         self.assertFalse(does_contain_entity_2)
+
+        expected_entity = self.component_pool.entities[0]
+        self.assertEqual(expected_entity, entity_1)
     
 class PositionSystem(System):
     required_components = [PositionComponent]
