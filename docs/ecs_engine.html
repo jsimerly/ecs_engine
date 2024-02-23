@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ecs_engine package &#8212; encs_engine .1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=69a67b7f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="ecs-engine-package">
+<h1>ecs_engine package<a class="headerlink" href="#ecs-engine-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-ecs_engine.component">
+<span id="ecs-engine-component-module"></span><h2>ecs_engine.component module<a class="headerlink" href="#module-ecs_engine.component" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ecs_engine.component.Component">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ecs_engine.component.</span></span><span class="sig-name descname"><span class="pre">Component</span></span><a class="headerlink" href="#ecs_engine.component.Component" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for components in an Entity Component System (ECS) architecture.</p>
+<p>Components are reusable data containers that entities use to store state or attributes.
+Standard Components are intended for use cases where multiple entities each have
+their own distinct instances of a component, such as a HealthComponent where
+each entity has separate health values.</p>
+<dl class="simple">
+<dt>Methods:</dt><dd><p>serialize: Converts the component’s state to a serializable format.
+deserialize: Reconstructs a component instance from serialized data.</p>
+</dd>
+</dl>
+<p>Subclasses must implement serialize and deserialize methods to support
+serialization and deserialization of component state.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.component.Component.deserialize">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deserialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serialized_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Type</span></span></span><a class="headerlink" href="#ecs_engine.component.Component.deserialize" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.component.Component.serialize">
+<span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#ecs_engine.component.Component.serialize" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ecs_engine.component.SingletonComponent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ecs_engine.component.</span></span><span class="sig-name descname"><span class="pre">SingletonComponent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.component.SingletonComponent" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ecs_engine.component.Component" title="ecs_engine.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a></p>
+<p>A singleton component for global state management within an ECS architecture.</p>
+<p>SingletonComponents are used when systems and entities need to access shared information
+that is not owned by individual entities, facilitating a global state accessible across
+the entire ECS. This design prevents systems from maintaining their own separate states,
+promoting a more unified and accessible state management approach.</p>
+<p>Example use cases include a global InputComponent that stores the user’s most recent inputs,
+ensuring that this information is readily available to any system or entity that requires it.</p>
+</dd></dl>
+
+</section>
+<section id="module-ecs_engine.component_pool">
+<span id="ecs-engine-component-pool-module"></span><h2>ecs_engine.component_pool module<a class="headerlink" href="#module-ecs_engine.component_pool" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ecs_engine.component_pool.ComponentPool">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ecs_engine.component_pool.</span></span><span class="sig-name descname"><span class="pre">ComponentPool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity_capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.component_pool.ComponentPool" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages a pool of components and stores them in memory when out of use to reduce object init times.
+Stores entity_ids in a Sparse Set for quick querying and management.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>component_type (Type[Component]): The type of component this pool manages.   
+pool (list[Component]): A list of inactive component instances available for reuse.
+active (list[Component): A list of Componens that are actively using components of this type.
+entity_ids (list[int]): The ‘dense’ array part of the sparse set containing entity IDs.
+sparse (list[int]): The ‘sparse’ array part of the sparse set for quick lookup.
+entity_capacity (int): The maximum number of entities that can be managed.</p>
+</dd>
+<dt>Methods:</dt><dd><p>get_or_create</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.component_pool.ComponentPool.add_entity">
+<span class="sig-name descname"><span class="pre">add_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ecs_engine.entity.Entity" title="ecs_engine.entity.Entity"><span class="pre">Entity</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.component_pool.ComponentPool.add_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Adds an entity to the component pool if it has the required component.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>entity (Entity): The entity to add.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If the entity does not have the required component.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.component_pool.ComponentPool.contains_entity">
+<span class="sig-name descname"><span class="pre">contains_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ecs_engine.entity.Entity" title="ecs_engine.entity.Entity"><span class="pre">Entity</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ecs_engine.component_pool.ComponentPool.contains_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if the entity is in the component pool.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>entity (Entity): The entity to check.</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool: True if the entity is in the pool, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.component_pool.ComponentPool.get_or_create_component_obj">
+<span class="sig-name descname"><span class="pre">get_or_create_component_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#ecs_engine.component_pool.ComponentPool.get_or_create_component_obj" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves an inactive component from the pool or creates a new instance if the pool is empty.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: Arbitrary keyword arguments passed to the component’s constructor.</p>
+</dd>
+<dt>Returns:</dt><dd><p>An instance of the component.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.component_pool.ComponentPool.release_component">
+<span class="sig-name descname"><span class="pre">release_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ecs_engine.component.Component" title="ecs_engine.component.Component"><span class="pre">Component</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.component_pool.ComponentPool.release_component" title="Link to this definition">¶</a></dt>
+<dd><p>Releases a component instance, making it available for reuse.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>instance (Component): The component instance to release.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.component_pool.ComponentPool.remove_entity">
+<span class="sig-name descname"><span class="pre">remove_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ecs_engine.entity.Entity" title="ecs_engine.entity.Entity"><span class="pre">Entity</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.component_pool.ComponentPool.remove_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Removes an entity from the component pool if it is present.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>entity (Entity): The entity to remove.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ecs_engine.entity">
+<span id="ecs-engine-entity-module"></span><h2>ecs_engine.entity module<a class="headerlink" href="#module-ecs_engine.entity" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ecs_engine.entity.Entity">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ecs_engine.entity.</span></span><span class="sig-name descname"><span class="pre">Entity</span></span><a class="headerlink" href="#ecs_engine.entity.Entity" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents an individual entity in the Entity Component System (ECS).</p>
+<p>An entity is a general-purpose object characterized by its unique ID and
+the components attached to it. Entities themselves are kept lightweight
+and flexible, serving as containers for components that actually implement
+functionality and data.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>next_id (int): Class variable to track the next available entity ID.
+max_entities (int): Class variable to limit the total number of entities.
+destroyed_entities_ids (list[int]): Class variable to recycle IDs of destroyed entities.</p>
+</dd>
+<dt>Methods:</dt><dd><p>create_next_id: Generates the next entity ID, recycling IDs if necessary.
+_add_component: Attaches a component to the entity.
+_remove_component: Removes a component from the entity.
+get_component: Retrieves a component attached to the entity, if it exists.
+has_component: Checks whether the entity has a specific type of component attached.
+reset_attributes: Resets class-level entity tracking attributes.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity.Entity.create_next_id">
+<span class="sig-name descname"><span class="pre">create_next_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.entity.Entity.create_next_id" title="Link to this definition">¶</a></dt>
+<dd><p>Updates <cite>next_id</cite> for the next entity creation. Recycles old IDs from <cite>destroyed_entities_ids</cite>
+if the <cite>max_entities</cite> limit has been reached. Raises an error if no IDs are available.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ecs_engine.entity.Entity.destroyed_entities_ids">
+<span class="sig-name descname"><span class="pre">destroyed_entities_ids</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#ecs_engine.entity.Entity.destroyed_entities_ids" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity.Entity.get_component">
+<span class="sig-name descname"><span class="pre">get_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ecs_engine.entity.Entity.get_component" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a component of a specific type attached to this entity, if it exists.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>component_type (Type[Component]): The type of component to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The component instance if found, otherwise None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity.Entity.has_component">
+<span class="sig-name descname"><span class="pre">has_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ecs_engine.component.Component" title="ecs_engine.component.Component"><span class="pre">Component</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ecs_engine.entity.Entity.has_component" title="Link to this definition">¶</a></dt>
+<dd><p>Checks whether the entity has a component of a specific type attached.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>component_type (Type[Component]): The type of component to check for.</p>
+</dd>
+<dt>Returns:</dt><dd><p>True if the component is attached, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ecs_engine.entity.Entity.max_entities">
+<span class="sig-name descname"><span class="pre">max_entities</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000</span></em><a class="headerlink" href="#ecs_engine.entity.Entity.max_entities" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ecs_engine.entity.Entity.next_id">
+<span class="sig-name descname"><span class="pre">next_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#ecs_engine.entity.Entity.next_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity.Entity.reset_attributes">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_entites</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.entity.Entity.reset_attributes" title="Link to this definition">¶</a></dt>
+<dd><p>Resets the class-level attributes tracking entity IDs. Useful for reinitializing the entity system.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>max_entities (int, optional): The new maximum number of entities. Defaults to 1000.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ecs_engine.entity_admin">
+<span id="ecs-engine-entity-admin-module"></span><h2>ecs_engine.entity_admin module<a class="headerlink" href="#module-ecs_engine.entity_admin" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ecs_engine.entity_admin.</span></span><span class="sig-name descname"><span class="pre">EcsAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_entities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ecs_engine.interfaces.IEcsAdmin" title="ecs_engine.interfaces.IEcsAdmin"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEcsAdmin</span></code></a></p>
+<p>Manages the core functionality of the Entity Component System (ECS),
+acting as the central registry for entities, components, systems, and events.</p>
+<dl>
+<dt>Attributes:</dt><dd><p>events (list[str]): A list of event names to be registered with the event bus.
+init_systems (list[Type[System]]): A list of system types to be initialized.
+max_entities (int): The maximum number of entities the ECS can manage.
+entity_map (dict[int, Entity]): A mapping of entity IDs to Entity instances.
+components (list[Component]): A list of all components managed by the ECS.
+component_pools (dict[Type[Component], ComponentPool]): A dictionary mapping component types</p>
+<blockquote>
+<div><p>to their respective ComponentPool instances for efficient management.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>singleton_components (dict[Type[SingletonComponent], SingletonComponent]): A dictionary holding</dt><dd><p>instances of singleton components.</p>
+</dd>
+</dl>
+</dd>
+<dt>Methods:</dt><dd><p>add_singleton_component: Registers a singleton component with the ECS.
+get_singleton_component: Retrieves a registered singleton component by type.
+create_component_pool: Creates and registers a new component pool for a specific component type.
+get_component_pool: Retrieves a component pool for a specific component type, if it exists.
+create_entity: Creates a new entity, optionally initializing it with a set of components.
+get_entity: Retrieves an entity by its ID.
+attach_component_to_entity: Attaches a component to an entity and registers the entity with the relevant component pool.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin.add_singleton_component">
+<span class="sig-name descname"><span class="pre">add_singleton_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin.add_singleton_component" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a singleton component instance with the ECS.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>component (SingletonComponent): An instance of a singleton component to be registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin.attach_component_to_entity">
+<span class="sig-name descname"><span class="pre">attach_component_to_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ecs_engine.entity.Entity" title="ecs_engine.entity.Entity"><span class="pre">Entity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ecs_engine.component.Component" title="ecs_engine.component.Component"><span class="pre">Component</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin.attach_component_to_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Attaches a component to an entity and registers the entity with the component’s pool.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>entity (Entity): The entity to which the component will be attached.
+component (Component): The component to attach to the entity.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin.create_component_pool">
+<span class="sig-name descname"><span class="pre">create_component_pool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ecs_engine.component.Component" title="ecs_engine.component.Component"><span class="pre">Component</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ecs_engine.component_pool.ComponentPool" title="ecs_engine.component_pool.ComponentPool"><span class="pre">ComponentPool</span></a></span></span><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin.create_component_pool" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new component pool for managing instances of a specific component type.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>component_type (Type[Component]): The component type for which to create a pool.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A new ComponentPool instance for the specified component type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin.create_entity">
+<span class="sig-name descname"><span class="pre">create_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ecs_engine.entity.Entity" title="ecs_engine.entity.Entity"><span class="pre">Entity</span></a></span></span><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin.create_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new entity and optionally initializes it with a given set of components.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>components (list[Component], optional): A list of components to attach to the new entity.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The newly created Entity instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin.events">
+<span class="sig-name descname"><span class="pre">events</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin.events" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin.get_component_pool">
+<span class="sig-name descname"><span class="pre">get_component_pool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ecs_engine.component.Component" title="ecs_engine.component.Component"><span class="pre">Component</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ecs_engine.component_pool.ComponentPool" title="ecs_engine.component_pool.ComponentPool"><span class="pre">ComponentPool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin.get_component_pool" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the component pool associated with a specific component type, if it exists.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>component_type (Type[Component]): The component type whose pool to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The ComponentPool instance for the specified component type, or None if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin.get_entity">
+<span class="sig-name descname"><span class="pre">get_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ecs_engine.entity.Entity" title="ecs_engine.entity.Entity"><span class="pre">Entity</span></a></span></span><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin.get_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves an entity by its ID.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>entity_id (int): The ID of the entity to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The Entity instance with the specified ID.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin.get_singleton_component">
+<span class="sig-name descname"><span class="pre">get_singleton_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin.get_singleton_component" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a singleton component instance by its type.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>component_type (type[T]): The class type of the singleton component to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>An instance of the specified singleton component type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ecs_engine.entity_admin.EcsAdmin.init_systems">
+<span class="sig-name descname"><span class="pre">init_systems</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ecs_engine.system.System" title="ecs_engine.system.System"><span class="pre">System</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#ecs_engine.entity_admin.EcsAdmin.init_systems" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ecs_engine.events">
+<span id="ecs-engine-events-module"></span><h2>ecs_engine.events module<a class="headerlink" href="#module-ecs_engine.events" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ecs_engine.events.EventBus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ecs_engine.events.</span></span><span class="sig-name descname"><span class="pre">EventBus</span></span><a class="headerlink" href="#ecs_engine.events.EventBus" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ecs_engine.interfaces.IEventBus" title="ecs_engine.interfaces.IEventBus"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEventBus</span></code></a></p>
+<p>Implements a simple event bus for an event-driven architecture, facilitating communication
+between different parts of the application through events.</p>
+<p>The EventBus allows components to subscribe to specific events and be notified when those
+events are published. This decouples the event publishers from the subscribers, improving
+modularity and flexibility.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>events (dict[str, list[Callable]]): A dictionary mapping event names to lists of callback functions
+(subscribers) that should be invoked when the event is published.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.events.EventBus.publish">
+<span class="sig-name descname"><span class="pre">publish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.events.EventBus.publish" title="Link to this definition">¶</a></dt>
+<dd><p>Publishes an event of a specific type, invoking all subscribed callback functions.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>event_name (str): The name of the event to publish.
+<a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs: Arbitrary keyword arguments that will be passed to the callback functions.</p>
+</dd>
+<dt>Raises:</dt><dd><p>KeyError: If the event_name does not exist in the events dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.events.EventBus.register_event">
+<span class="sig-name descname"><span class="pre">register_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.events.EventBus.register_event" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a new event type in the event bus. Each event type is identified by a unique name.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>event_name (str): The unique name of the event to register.</p>
+</dd>
+<dt>Raises:</dt><dd><p>KeyError: If the event_name already exists in the events dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.events.EventBus.subscribe">
+<span class="sig-name descname"><span class="pre">subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.events.EventBus.subscribe" title="Link to this definition">¶</a></dt>
+<dd><p>Subscribes a callback function to a specific event type. The callback will be invoked
+when the event is published.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>event_name (str): The name of the event to subscribe to.
+callback (Callable): The callback function that should be invoked when the event is published.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ecs_engine.interfaces">
+<span id="ecs-engine-interfaces-module"></span><h2>ecs_engine.interfaces module<a class="headerlink" href="#module-ecs_engine.interfaces" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ecs_engine.interfaces.IEcsAdmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ecs_engine.interfaces.</span></span><span class="sig-name descname"><span class="pre">IEcsAdmin</span></span><a class="headerlink" href="#ecs_engine.interfaces.IEcsAdmin" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.interfaces.IEcsAdmin.get_component_pool">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_component_pool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ecs_engine.component.Component" title="ecs_engine.component.Component"><span class="pre">Component</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ecs_engine.component_pool.ComponentPool" title="ecs_engine.component_pool.ComponentPool"><span class="pre">ComponentPool</span></a></span></span><a class="headerlink" href="#ecs_engine.interfaces.IEcsAdmin.get_component_pool" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.interfaces.IEcsAdmin.get_entity">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ecs_engine.entity.Entity" title="ecs_engine.entity.Entity"><span class="pre">Entity</span></a></span></span><a class="headerlink" href="#ecs_engine.interfaces.IEcsAdmin.get_entity" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.interfaces.IEcsAdmin.get_singleton_component">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_singleton_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#ecs_engine.interfaces.IEcsAdmin.get_singleton_component" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ecs_engine.interfaces.IEventBus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ecs_engine.interfaces.</span></span><span class="sig-name descname"><span class="pre">IEventBus</span></span><a class="headerlink" href="#ecs_engine.interfaces.IEventBus" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.interfaces.IEventBus.publish">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">publish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.interfaces.IEventBus.publish" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.interfaces.IEventBus.subscribe">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.interfaces.IEventBus.subscribe" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ecs_engine.system">
+<span id="ecs-engine-system-module"></span><h2>ecs_engine.system module<a class="headerlink" href="#module-ecs_engine.system" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ecs_engine.system.System">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ecs_engine.system.</span></span><span class="sig-name descname"><span class="pre">System</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecs_admin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ecs_engine.interfaces.IEcsAdmin" title="ecs_engine.interfaces.IEcsAdmin"><span class="pre">IEcsAdmin</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_bus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ecs_engine.interfaces.IEventBus" title="ecs_engine.interfaces.IEventBus"><span class="pre">IEventBus</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.system.System" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for systems in an Entity Component System (ECS) framework.</p>
+<p>Systems encapsulate the logic that operates on entities possessing a specific set of components.
+This class provides mechanisms to subscribe to events, publish events, and access entities and
+components relevant to the system’s functionality.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>_required_components (list[Type[Component]]): A list of component types required by the system.
+ecs_admin (IEcsAdmin): The central ECS administration interface, providing access to entities and components.
+event_bus (IEventBus): The event bus for subscribing to and publishing events.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.system.System.get_component_pools">
+<span class="sig-name descname"><span class="pre">get_component_pools</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ecs_engine.component_pool.ComponentPool" title="ecs_engine.component_pool.ComponentPool"><span class="pre">ComponentPool</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ecs_engine.system.System.get_component_pools" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the component pools for the system’s required components.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>A list of ComponentPool instances for the required components, sorted by the number of entities.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.system.System.get_entity">
+<span class="sig-name descname"><span class="pre">get_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ecs_engine.entity.Entity" title="ecs_engine.entity.Entity"><span class="pre">Entity</span></a></span></span><a class="headerlink" href="#ecs_engine.system.System.get_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves an entity by its ID.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>entity_id (int): The ID of the entity to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The Entity instance with the specified ID.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.system.System.get_required_entities">
+<span class="sig-name descname"><span class="pre">get_required_entities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ecs_engine.entity.Entity" title="ecs_engine.entity.Entity"><span class="pre">Entity</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ecs_engine.system.System.get_required_entities" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all entities that possess all of the system’s required components.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>A list of Entity instances that meet the system’s component requirements.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.system.System.get_singleton_component">
+<span class="sig-name descname"><span class="pre">get_singleton_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#ecs_engine.system.System.get_singleton_component" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a singleton component instance.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>component (Type[SingletonComponent]): The type of the singleton component to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>An instance of the specified singleton component type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.system.System.publish_event">
+<span class="sig-name descname"><span class="pre">publish_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.system.System.publish_event" title="Link to this definition">¶</a></dt>
+<dd><p>Publishes an event through the event bus.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>event_name (str): The name of the event to publish.
+<a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs: Arbitrary keyword arguments passed to the event handlers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ecs_engine.system.System.required_components">
+<span class="sig-name descname"><span class="pre">required_components</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#ecs_engine.system.System.required_components" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ecs_engine.system.System.subscribe_to_events">
+<span class="sig-name descname"><span class="pre">subscribe_to_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.system.System.subscribe_to_events" title="Link to this definition">¶</a></dt>
+<dd><p>Subscribes the system to events based on methods decorated with <cite>subscribe_to_event</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ecs_engine.system.subscribe_to_event">
+<span class="sig-prename descclassname"><span class="pre">ecs_engine.system.</span></span><span class="sig-name descname"><span class="pre">subscribe_to_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ecs_engine.system.subscribe_to_event" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator to mark a System method for subscription to a specific event.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>event_name (str): The name of the event to subscribe to.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The decorated function with an added ‘_event_subscriptions’ attribute.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-ecs_engine">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ecs_engine" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">encs_engine</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/ecs_engine.component.html">ecs_engine.component</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/ecs_engine.component_pool.html">ecs_engine.component_pool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/ecs_engine.entity.html">ecs_engine.entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/ecs_engine.events.html">ecs_engine.events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/ecs_engine.system.html">ecs_engine.system</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Jacob Simerly.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/ecs_engine.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
