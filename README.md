@@ -17,7 +17,7 @@ pip install ecs-engine==0.1
 * **Component Pool**: An Object Pool for fast and efficient component creation. As well as using a "Sparse Set" data structure to improve entity caching and entity querying. [More on the Sparse Set here](https://stackoverflow.com/questions/23721645/designs-of-an-entity-component-system).
 
   <sub>It is worth noting that the sparse set will increase memory overhead in exchange for performance.<sub>
-* **EventBus**: An event bus to help provide system to system and admin to sysetm communication.
+* **EventBus**: An event bus to help provide system to system and admin to system communication.
 
 
 ### Quick start
