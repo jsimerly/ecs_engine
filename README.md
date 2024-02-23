@@ -80,9 +80,6 @@ while True:
             
 ```      
           
-            
-
-# About ECS
 ## Why use an ECS?
 ECSs are considered highly performant and encourage decoupling. 
 
