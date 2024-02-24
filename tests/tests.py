@@ -254,7 +254,7 @@ class World(EcsAdmin):
 
     def run_one_timestep(self):
         timestep = 1/60
-        self.event_bus.publish('update_time_step', timestep)
+        self.publish_event('update_time_step', timestep)
 
 class TestSystem(unittest.TestCase):
     def setUp(self) -> None:
@@ -318,6 +318,7 @@ class TestEcsAdmin(unittest.TestCase):
     def setUp(self) -> None:
         self.world = World(1400)
         self.world.add_singleton_component(InputComponent((0,0)))
+        self.pos_system: PositionSystem = self.world.systems[0] 
 
     def test_initialization(self):
         self.assertEqual(self.world.max_entities, 1400)
@@ -364,8 +365,7 @@ class TestEcsAdmin(unittest.TestCase):
         health_component_pool = self.world.get_component_pool(HealthComponent)
         self.assertIsInstance(health_component_pool, ComponentPool)
         self.assertEqual(health_component_pool.component_type, HealthComponent)
-        self.assertTrue(health_component_pool.contains_entity(entity))
-         
+        self.assertTrue(health_component_pool.contains_entity(entity))       
 
 if __name__ == '__main__':
     unittest.main()

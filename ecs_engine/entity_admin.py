@@ -157,6 +157,19 @@ class EcsAdmin(IEcsAdmin):
             component_pool = self.create_component_pool(type(component))
         component_pool.add_entity(entity)
 
+    def publish_event(self, event_name: str, **kwargs):
+        '''
+        Publishes an event of a specific type, invoking all subscribed callback functions.
+
+        Args:
+            event_name (str): The name of the event to publish.
+            **kwargs: Arbitrary keyword arguments that will be passed to the callback functions.
+
+        Raises:
+            KeyError: If the event_name does not exist in the events dictionary.
+        '''
+        self.event_bus.publish(event_name, **kwargs)
+
     def _register_events(self, events: list[str]):
         '''
         Registers a list of event names with the event bus.
