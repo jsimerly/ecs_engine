@@ -8,7 +8,7 @@ This ECS Engine is a lightweight and dependancyless "Entity Component System" (E
 ### Installation
 To install this ECS Engine: 
 ```
-pip install ecs-engine==0.2.1
+pip install ecs-engine==0.3.0
 ```
 
 ### Features
