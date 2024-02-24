@@ -38,6 +38,7 @@ class EcsAdmin(IEcsAdmin):
     '''
     events: list[str] = []
     systems: list[Type[System]] = []
+    singleton_components: list[SingletonComponent] = []
     
     def __init__(self, max_entities: int = 1000):
         '''
@@ -49,14 +50,15 @@ class EcsAdmin(IEcsAdmin):
 
         self.event_bus = EventBus()
         self._systems: list[System] = []
+        self._singleton_components: dict[Type[SingletonComponent], SingletonComponent] = {}
 
         self._register_events(self.events)
         self._create_systems(self.systems)
+        self._add_singleton_components(self.singleton_components)
 
         self.entity_map: dict[int, Entity] = {}
         self.components: list[Component] = []
         self.component_pools: dict[Type[Component], ComponentPool] = {}
-        self.singleton_components: dict[Type[SingletonComponent], SingletonComponent] = {}
 
     def __repr__(self) -> str:
         return str(self.__class__)
@@ -68,7 +70,7 @@ class EcsAdmin(IEcsAdmin):
         Args:
             component (SingletonComponent): An instance of a singleton component to be registered.
         '''
-        self.singleton_components[type(component)] = component 
+        self._singleton_components[type(component)] = component 
     
     def get_singleton_component(self, component_type: type[T]) -> T:
         '''
@@ -80,7 +82,7 @@ class EcsAdmin(IEcsAdmin):
         Returns:
             An instance of the specified singleton component type.
         '''
-        return self.singleton_components[component_type]
+        return self._singleton_components[component_type]
 
     def create_component_pool(self, component_type: Type[Component]) -> ComponentPool:
         '''
@@ -190,6 +192,10 @@ class EcsAdmin(IEcsAdmin):
         for System in systems:
             system_obj = System(self, self.event_bus)
             self._systems.append(system_obj)
+
+    def _add_singleton_components(self, singleton_components: list[SingletonComponent]):
+        for s_component in singleton_components:
+            self.add_singleton_component(s_component)
 
 
 

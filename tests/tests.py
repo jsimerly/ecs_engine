@@ -234,8 +234,8 @@ class PositionSystem(System):
             position_comp = entity.get_component(PositionComponent)
             input_comp = self.get_singleton_component(InputComponent)
 
-            position_comp.x += input_comp.mouse_pos[0]
-            position_comp.y += input_comp.mouse_pos[1]
+            position_comp.x = input_comp.mouse_pos[0]
+            position_comp.y = input_comp.mouse_pos[1]
 
             if input_comp.clicked:
                 self.publish_event('test_publish', test=123)
@@ -251,6 +251,7 @@ class HealthSystem(System):
 class World(EcsAdmin):
     systems = [PositionSystem, HealthSystem]
     events = ['test_publish', 'update_time_step']
+    singleton_components = [InputComponent((10,10))]
 
     def run_one_timestep(self):
         timestep = 1/60
@@ -260,7 +261,6 @@ class TestSystem(unittest.TestCase):
     def setUp(self) -> None:
         self.world = World()
         self.world.create_entity([PositionComponent(0, 0)])
-        self.world.add_singleton_component(InputComponent((10,10)))
         self.pos_system: PositionSystem = self.world._systems[0] 
         self.health_system: HealthSystem = self.world._systems[1]
         
@@ -271,6 +271,9 @@ class TestSystem(unittest.TestCase):
 
     def test_subscribe_to_events(self):
         entities = self.pos_system.get_required_entities()
+        input_comp = self.world.get_singleton_component(InputComponent)
+        input_comp.mouse_pos = (10, 10)
+
         for entity in entities:
             pos_component = entity.get_component(PositionComponent)
             self.assertEqual(pos_component.x, 0)
