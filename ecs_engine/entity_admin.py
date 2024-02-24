@@ -18,7 +18,7 @@ class EcsAdmin(IEcsAdmin):
 
     Attributes:
         events (list[str]): A list of event names to be registered with the event bus.
-        init_systems (list[Type[System]]): A list of system types to be initialized.
+        systems (list[Type[System]]): A list of system types to be initialized.
         max_entities (int): The maximum number of entities the ECS can manage.
         entity_map (dict[int, Entity]): A mapping of entity IDs to Entity instances.
         components (list[Component]): A list of all components managed by the ECS.
@@ -37,7 +37,7 @@ class EcsAdmin(IEcsAdmin):
         attach_component_to_entity: Attaches a component to an entity and registers the entity with the relevant component pool.
     '''
     events: list[str] = []
-    init_systems: list[Type[System]] = []
+    systems: list[Type[System]] = []
     
     def __init__(self, max_entities: int = 1000):
         '''
@@ -48,10 +48,10 @@ class EcsAdmin(IEcsAdmin):
         self.entity_manager = EntityManager(max_entities)
 
         self.event_bus = EventBus()
-        self.systems: list[System] = []
+        self._systems: list[System] = []
 
         self._register_events(self.events)
-        self._create_systems(self.init_systems)
+        self._create_systems(self.systems)
 
         self.entity_map: dict[int, Entity] = {}
         self.components: list[Component] = []
@@ -189,7 +189,7 @@ class EcsAdmin(IEcsAdmin):
         '''
         for System in systems:
             system_obj = System(self, self.event_bus)
-            self.systems.append(system_obj)
+            self._systems.append(system_obj)
 
 
 

@@ -249,7 +249,7 @@ class HealthSystem(System):
         self.updated = test
 
 class World(EcsAdmin):
-    init_systems = [PositionSystem, HealthSystem]
+    systems = [PositionSystem, HealthSystem]
     events = ['test_publish', 'update_time_step']
 
     def run_one_timestep(self):
@@ -261,8 +261,8 @@ class TestSystem(unittest.TestCase):
         self.world = World()
         self.world.create_entity([PositionComponent(0, 0)])
         self.world.add_singleton_component(InputComponent((10,10)))
-        self.pos_system: PositionSystem = self.world.systems[0] 
-        self.health_system: HealthSystem = self.world.systems[1]
+        self.pos_system: PositionSystem = self.world._systems[0] 
+        self.health_system: HealthSystem = self.world._systems[1]
         
     def test_event_subscriptions(self):
         event_bus = self.world.event_bus
@@ -318,15 +318,15 @@ class TestEcsAdmin(unittest.TestCase):
     def setUp(self) -> None:
         self.world = World(1400)
         self.world.add_singleton_component(InputComponent((0,0)))
-        self.pos_system: PositionSystem = self.world.systems[0] 
+        self.pos_system: PositionSystem = self.world._systems[0] 
 
     def test_initialization(self):
         self.assertEqual(self.world.max_entities, 1400)
 
-        n_created_systems = len(self.world.systems)
+        n_created_systems = len(self.world._systems)
         self.assertEqual(n_created_systems, 2)
-        self.assertTrue(any(isinstance(item, PositionSystem) for item in self.world.systems))
-        self.assertTrue(any(isinstance(item, HealthSystem) for item in self.world.systems))
+        self.assertTrue(any(isinstance(item, PositionSystem) for item in self.world._systems))
+        self.assertTrue(any(isinstance(item, HealthSystem) for item in self.world._systems))
     
     def test_create_component_pool(self):
         component_pool = self.world.create_component_pool(HealthComponent)
