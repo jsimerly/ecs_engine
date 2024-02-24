@@ -4,6 +4,7 @@ from .entity import Entity
 from .events import EventBus
 from .component_pool import ComponentPool
 from .interfaces import IEcsAdmin
+from .entity_manager import EntityManager
 
 if TYPE_CHECKING:
     from ecs_engine.system import System
@@ -44,7 +45,7 @@ class EcsAdmin(IEcsAdmin):
             max_entities (int): The maximum number of entities that can be managed by the ECS.
         '''
         self.max_entities = max_entities
-        Entity.max_entities = max_entities
+        self.entity_manager = EntityManager(max_entities)
 
         self.event_bus = EventBus()
         self.systems: list[System] = []
@@ -120,7 +121,7 @@ class EcsAdmin(IEcsAdmin):
         Returns:
             The newly created Entity instance.
         '''
-        entity = Entity()
+        entity = self.entity_manager.create_entity()
         self.entity_map[entity.id] = entity
         
         if components is None:

@@ -27,27 +27,10 @@ class Entity:
         has_component: Checks whether the entity has a specific type of component attached.
         reset_attributes: Resets class-level entity tracking attributes.
     '''
-    next_id = 0
-    max_entities = 1000
-    destroyed_entities_ids = []
 
-    def __init__(self):
-        self.id: int = Entity.next_id
-        self.create_next_id()
+    def __init__(self, id: int):
+        self.id: int = id
         self.components: dict[Type[Component], Component] =  {}
-
-    def create_next_id(self):
-        '''
-        Updates `next_id` for the next entity creation. Recycles old IDs from `destroyed_entities_ids`
-        if the `max_entities` limit has been reached. Raises an error if no IDs are available.
-        '''
-
-        if self.next_id >= self.max_entities:
-            if not self.destroyed_entities_ids: 
-                raise ValueError("No available IDs: 'destroyed_entities_ids' is empty.")
-            Entity.next_id = self.destroyed_entities_ids.pop()
-        else:
-            Entity.next_id += 1
 
     def _add_component(self, component: Component):
         '''
@@ -93,18 +76,6 @@ class Entity:
         '''
         return component_type in self.components
     
-    @classmethod
-    def reset_attributes(cls, max_entites:int=1000):
-        '''
-        Resets the class-level attributes tracking entity IDs. Useful for reinitializing the entity system.
-
-        Args:
-            max_entities (int, optional): The new maximum number of entities. Defaults to 1000.
-        '''
-        cls.next_id = 0
-        cls.destroyed_entities_ids = []
-        cls.max_entities = max_entites
-
     def __str__(self) -> str:
         return f"{self.__class__.__name__}"
     

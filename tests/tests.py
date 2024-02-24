@@ -6,6 +6,7 @@ from ecs_engine.entity import Entity
 from ecs_engine.component_pool import ComponentPool
 from ecs_engine.entity_admin import EcsAdmin
 from ecs_engine.system import System, subscribe_to_event
+from ecs_engine.entity_manager import EntityManager
 
 class HealthComponent(Component):
     def __init__(self, health):
@@ -74,12 +75,7 @@ class TestSingletonComponent(unittest.TestCase):
 
 class TestEntity(unittest.TestCase):
     def setUp(self) -> None:
-        Entity.reset_attributes()
-        self.entity = Entity()
-
-    def test_next_id(self):
-        self.assertEqual(self.entity.id, 0)
-        self.assertEqual(Entity.next_id, 1)
+        self.entity = Entity(0)
 
     def test_add_component(self):
         health_component = HealthComponent(100)
@@ -122,39 +118,32 @@ class TestEntity(unittest.TestCase):
         self.assertTrue(has_pos_component)
         self.assertFalse(has_health_componnet)
 
-    def test_reset_attributes(self):
-        Entity.next_id = 300
-        Entity.max_entities = 400
-        Entity.destroyed_entities_ids = [42]
-        Entity.reset_attributes()
-
-        self.assertEqual(Entity.next_id, 0)
-        self.assertEqual(Entity.max_entities, 1000)
-        self.assertEqual(Entity.destroyed_entities_ids, [])
-
-        Entity.reset_attributes(4000)
-        self.assertEqual(Entity.max_entities, 4000)
-
-class TestEntityNext(unittest.TestCase):
+class TestEntityManager(unittest.TestCase):
     def setUp(self) -> None:
-        Entity.reset_attributes()
+        self.entity_manager = EntityManager(1000)
+
+    def test_create_entity(self):
+        entity = self.entity_manager.create_entity()
+        self.assertIsInstance(entity, Entity)
+
+    def test_move_to_next_id(self):
+        self.entity_manager.next_id = 0
+        self.entity_manager.move_to_next_id()
+        self.assertEqual(self.entity_manager.next_id, 1)
+
+    def test_move_to_next_id_destroyed_ids(self):
+        self.entity_manager.max_entities = 1000
+        self.entity_manager.next_id = 1000
+        self.entity_manager.destroyed_entity_ids = [42]
+        self.entity_manager.move_to_next_id()
+        self.assertEqual(self.entity_manager.next_id, 42)
 
     def test_raise_over_entity_limit(self):
-        Entity.destroyed_entities_ids = []
-        Entity.next_id = 1000
-        Entity.max_entities = 1000
+        self.entity_manager.max_entities = 1000
+        self.entity_manager.next_id = 1000
+        self.entity_manager.destroyed_entity_ids = []
         with self.assertRaises(ValueError):
-            new_entity = Entity()
-
-    def test_destoryed_entity_id(self):
-        Entity.destroyed_entities_ids = [42]
-        Entity.next_id = 1000
-        Entity.max_entities = 1000
-        new_entity_1 = Entity()
-        new_entity_2 = Entity()
-        self.assertEqual(new_entity_1.id, 1000)
-        self.assertEqual(new_entity_2.id, 42)
-
+            self.entity_manager.move_to_next_id()
 class TestComponentPool(unittest.TestCase):
     def setUp(self) -> None:
         self.component_pool = ComponentPool(HealthComponent, entity_capacity=1000)
@@ -181,7 +170,7 @@ class TestComponentPool(unittest.TestCase):
         self.assertEqual(active_size, 0)
 
     def test_add_entity(self):
-        entity_1 = Entity()
+        entity_1 = Entity(0)
         entity_1._add_component(HealthComponent(100))
         self.component_pool.add_entity(entity_1)
         n_entity_ids = len(self.component_pool.entity_ids)
@@ -193,14 +182,14 @@ class TestComponentPool(unittest.TestCase):
         self.assertEqual(expected_entity, entity_1)
 
     def test_add_entity_no_component(self):
-        entity_1 = Entity()
+        entity_1 = Entity(0)
         with self.assertRaises(ValueError):
             self.component_pool.add_entity(entity_1)
 
     def test_contains_entity(self):
-        entity_1 = Entity()
+        entity_1 = Entity(0)
         entity_1._add_component(HealthComponent(100))
-        entity_2 = Entity()
+        entity_2 = Entity(1)
         self.component_pool.add_entity(entity_1)
 
         does_contain_entity_1 = self.component_pool.contains_entity(entity_1)
@@ -210,8 +199,8 @@ class TestComponentPool(unittest.TestCase):
         self.assertFalse(does_contain_entity_2)
 
     def test_remove_entity(self):
-        entity_1 = Entity()
-        entity_2 = Entity()
+        entity_1 = Entity(0)
+        entity_2 = Entity(1)
         entity_1._add_component(HealthComponent(100))
         entity_2._add_component(HealthComponent(100))
         self.component_pool.add_entity(entity_1)
@@ -269,7 +258,6 @@ class World(EcsAdmin):
 
 class TestSystem(unittest.TestCase):
     def setUp(self) -> None:
-        Entity.reset_attributes()
         self.world = World()
         self.world.create_entity([PositionComponent(0, 0)])
         self.world.add_singleton_component(InputComponent((10,10)))
@@ -364,12 +352,12 @@ class TestEcsAdmin(unittest.TestCase):
         self.assertEqual(entity, expected_entity)
 
     def test_get_entity_error(self):
-        entity = Entity()
+        entity = Entity(0)
         with self.assertRaises(KeyError):
             self.world.get_entity(entity)
 
     def test_attach_component(self):
-        entity = Entity()
+        entity = Entity(0)
         component = HealthComponent(100)
         self.world.attach_component_to_entity(entity, component)
 
