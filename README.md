@@ -8,11 +8,12 @@ This ECS Engine is a lightweight and dependancyless "Entity Component System" (E
 ### Installation
 To install this ECS Engine: 
 ```
-pip install ecs-engine==0.3.0
+pip install ecs-engine==0.4.0
 ```
 
 ### Features
 * **Entity, Components, System, and Admin**: Includes all of the features needed for a baseline ECS.
+* **Entity Builder**: Is used to create builder objects to allow efficent object builder while making the process of creating entites more repeatable.
 * **Singleton Component**: A singleton component to manage singular state that is used by 1 or more systems but not owned by any entities. Check out the [GDC talk by Overwatch's Tim Ford](https://www.youtube.com/watch?v=W3aieHjyNvw) for more info.
 * **Component Pool**: An Object Pool for fast and efficient component creation. As well as using a "Sparse Set" data structure to improve entity caching and entity querying. [More on the Sparse Set here](https://stackoverflow.com/questions/23721645/designs-of-an-entity-component-system).
 
@@ -57,12 +58,28 @@ class InputSystem(System):
         input_singleton_component = self.get_singleton_component(InputSingletonComponent)
         input_singleton_component.input = inputs
 
+class CharacterBuilder(Builder):
+    def build_character(self, health, pos):
+        health_component = self.create_component(HealthComponent, health=health)
+        pos_component = self.create_component(PositionComponent, x=pos[0], y=pos[1])
+
+        components = [health_component, pos_component]
+        return self.build_entity(components)
+
 class World(EcsAdmin):
     systems = [UserMovementSystem]
     events = ['update_time_step', 'keyboard_input']
     singleton_components = [
         InputSingletonComponent([])
     ]
+    builders = [CharacterBuilder]
+
+    def __init__(self):
+        super().__init__()
+        self.create_starting_entities()
+
+    def create_starting_entities(self):
+        self.get_builder(CharacterBuilder).build_character(health=100, pos=(0,0)
 
     def timestep(self, time_step: float):
         self.event_bus.publish('update_time_step', time_step)
