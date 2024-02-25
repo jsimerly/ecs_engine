@@ -72,6 +72,8 @@ class World(EcsAdmin):
     singleton_components = [
         InputSingletonComponent([])
     ]
+    builders = [CharacterBuilder]
+
     def __init__(self):
         super().__init__()
         self.create_starting_entities()
