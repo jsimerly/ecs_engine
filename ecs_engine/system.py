@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from component_pool import ComponentPool
     from entity import Entity
     from interfaces import IEventBus, IEcsAdmin
+    from entity_builder import Builder
 
     T = TypeVar('T', bound=SingletonComponent)
 
@@ -114,6 +115,9 @@ class System(ABC):
             The Entity instance with the specified ID.
         '''
         return self.ecs_admin.get_entity(entity_id)
+    
+    def get_builder(self, builder_type: Type[Builder]) -> Builder:
+        return self.ecs_admin.get_builder(builder_type)
         
     def get_required_entities(self) -> list[Entity]:
         '''

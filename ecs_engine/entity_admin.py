@@ -6,10 +6,13 @@ from .component_pool import ComponentPool
 from .interfaces import IEcsAdmin
 from .entity_manager import EntityManager
 
+
 if TYPE_CHECKING:
     from ecs_engine.system import System
-    from component import Component, SingletonComponent
+    from .component import Component, SingletonComponent
+    from .entity_builder import Builder
     T = TypeVar('T', bound=SingletonComponent)
+    B = TypeVar('B', bound=Builder)
 
 class EcsAdmin(IEcsAdmin):
     '''
@@ -39,6 +42,7 @@ class EcsAdmin(IEcsAdmin):
     events: list[str] = []
     systems: list[Type[System]] = []
     singleton_components: list[SingletonComponent] = []
+    builders: list[Type[Builder]] = []
     
     def __init__(self, max_entities: int = 1000):
         '''
@@ -51,9 +55,11 @@ class EcsAdmin(IEcsAdmin):
         self.event_bus = EventBus()
         self._systems: list[System] = []
         self._singleton_components: dict[Type[SingletonComponent], SingletonComponent] = {}
+        self._builders: dict[Type[Builder], Builder] = {}
 
         self._register_events(self.events)
         self._create_systems(self.systems)
+        self._create_builders(self.builders)
         self._add_singleton_components(self.singleton_components)
 
         self.entity_map: dict[int, Entity] = {}
@@ -111,7 +117,11 @@ class EcsAdmin(IEcsAdmin):
         Returns:
             The ComponentPool instance for the specified component type, or None if not found.
         '''
-        return self.component_pools.get(component_type)
+        component_pool = self.component_pools.get(component_type)
+        if not component_pool:       
+            component_pool = self.create_component_pool(component_type)
+
+        return component_pool
     
     def create_entity(self, components=None) -> Entity:
         '''
@@ -145,6 +155,21 @@ class EcsAdmin(IEcsAdmin):
         '''
         return self.entity_map[entity_id]
 
+    def destroy_entity(self, entity: Entity):
+        '''
+        Destroys an entity and removes it from all component pools.
+
+        Args:
+            entity (Entity): An entity instance
+        '''
+        for component_type in entity.components.keys():
+            component_pool = self.component_pools[component_type]
+            component_pool.remove_entity(entity)
+
+        entity_id = entity.id
+        del self.entity_map[entity_id]
+        self.entity_manager.add_destoryed_entity_id(entity_id)
+
     def attach_component_to_entity(self, entity: Entity, component: Component):
         '''
         Attaches a component to an entity and registers the entity with the component's pool.
@@ -158,6 +183,18 @@ class EcsAdmin(IEcsAdmin):
         if component_pool is None:
             component_pool = self.create_component_pool(type(component))
         component_pool.add_entity(entity)
+
+    def get_builder(self, builder_type: Type[B]) -> B:
+        '''
+        Retrieves the builder instance associated with a specific builder type, if it exists.
+
+        Args:
+            builder_type (Type[Builder]): The builder type whose instance to retrieve.
+
+        Returns:
+            The Builder instance for the specified entity type or archetypes.
+        '''
+        return self._builders[builder_type]
 
     def publish_event(self, event_name: str, **kwargs):
         '''
@@ -197,6 +234,10 @@ class EcsAdmin(IEcsAdmin):
         for s_component in singleton_components:
             self.add_singleton_component(s_component)
 
+    def _create_builders(self, builders: list[Type[Builder]]):
+        for Builder in builders:
+            builder_instance = Builder(self)
+            self._builders[Builder] = builder_instance
 
 
     

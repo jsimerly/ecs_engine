@@ -14,6 +14,9 @@ class EntityManager:
         entity = Entity(self.next_id)
         self.move_to_next_id()
         return entity        
+    
+    def add_destoryed_entity_id(self, id: int):
+        self.destroyed_entity_ids.append(id)
 
     def move_to_next_id(self):
         '''

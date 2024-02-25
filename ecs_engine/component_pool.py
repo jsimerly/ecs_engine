@@ -20,7 +20,7 @@ class ComponentPool:
         entity_capacity (int): The maximum number of entities that can be managed.
 
     Methods:
-        get_or_create
+        get_or_create_component_obj: Retrieves an inactive component from the pool or creates a new instance if the pool is empty.
     '''
     def __init__(self, component_type: Type[T],  entity_capacity: int) -> None:
         self.component_type: Type[T] = component_type
@@ -99,12 +99,15 @@ class ComponentPool:
     
     def remove_entity(self, entity: Entity):
         '''
-        Removes an entity from the component pool if it is present.
+        Removes an entity from the component pool if it is present and releases the component back into the pool.
         
         Args:
             entity (Entity): The entity to remove.
         '''
         if self.contains_entity(entity):
+            component_instance = entity.get_component(self.component_type)
+            self.release_component(component_instance)
+
             dense_index = self.sparse[entity.id]
             last_entity_id = self.entity_ids[-1]
             last_entity = self.entities[-1]

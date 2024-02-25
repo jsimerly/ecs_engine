@@ -7,6 +7,7 @@ from ecs_engine.component_pool import ComponentPool
 from ecs_engine.entity_admin import EcsAdmin
 from ecs_engine.system import System, subscribe_to_event
 from ecs_engine.entity_manager import EntityManager
+from ecs_engine.entity_builder import Builder
 
 class HealthComponent(Component):
     def __init__(self, health):
@@ -24,7 +25,6 @@ class PositionComponent(Component):
     @classmethod
     def deserialize(cls, serialized_data: Any):
         return cls(**serialized_data)
-    
     
 class TestComponent(unittest.TestCase):
     def setUp(self) -> None:
@@ -159,15 +159,11 @@ class TestComponentPool(unittest.TestCase):
     def test_release_component(self):
         comp_1 = self.component_pool.get_or_create_component_obj(health=100)
         pool_size = len(self.component_pool.pool)
-        active_size = len(self.component_pool.active)
         self.assertEqual(pool_size, 0)
-        self.assertEqual(active_size, 1)
 
         self.component_pool.release_component(comp_1)
         pool_size = len(self.component_pool.pool)
-        active_size = len(self.component_pool.active)
         self.assertEqual(pool_size, 1)
-        self.assertEqual(active_size, 0)
 
     def test_add_entity(self):
         entity_1 = Entity(0)
@@ -201,19 +197,25 @@ class TestComponentPool(unittest.TestCase):
     def test_remove_entity(self):
         entity_1 = Entity(0)
         entity_2 = Entity(1)
-        entity_1._add_component(HealthComponent(100))
-        entity_2._add_component(HealthComponent(100))
+        hp_component_1 = self.component_pool.get_or_create_component_obj(health=100)
+        hp_component_2 = self.component_pool.get_or_create_component_obj(health=100)
+        entity_1._add_component(hp_component_1)
+        entity_2._add_component(hp_component_2)
         self.component_pool.add_entity(entity_1)
         self.component_pool.add_entity(entity_2)
 
         entity_id_size = len(self.component_pool.entity_ids)
         self.assertEqual(entity_id_size, 2)
+        self.assertEqual(len(self.component_pool.pool), 0)
         self.component_pool.remove_entity(entity_2)
 
         entity_id_size = len(self.component_pool.entity_ids)
         entities_size = len(self.component_pool.entities)
         self.assertEqual(entity_id_size, 1)
         self.assertEqual(entities_size, 1)
+
+        pool_size = len(self.component_pool.pool)
+        self.assertEqual(pool_size, 1)
 
         does_contain_entity_1 = self.component_pool.contains_entity(entity_1)
         does_contain_entity_2 = self.component_pool.contains_entity(entity_2)
@@ -248,14 +250,47 @@ class HealthSystem(System):
     def handle_event_test(self, test: int):
         self.updated = test
 
+class CharacterBuilder(Builder):
+    def build_character(self, health: int, pos: tuple[int, int]) -> Entity:
+        health_component = self.create_component(HealthComponent, health=health)
+        pos_component = self.create_component(PositionComponent, x=pos[0], y=pos[1])
+
+        components = [health_component, pos_component]
+        return self.build_entity(components)
+    
+
 class World(EcsAdmin):
     systems = [PositionSystem, HealthSystem]
     events = ['test_publish', 'update_time_step']
     singleton_components = [InputComponent((10,10))]
+    builders = [CharacterBuilder]
 
     def run_one_timestep(self):
         timestep = 1/60
         self.publish_event('update_time_step', timestep)
+
+class TestBuilder(unittest.TestCase):
+    def setUp(self) -> None:
+        self.world = World()
+
+    def test_create_component(self):
+        builder = self.world.get_builder(CharacterBuilder)
+        expected_health_comp = builder.create_component(HealthComponent, health=100)
+        self.assertIsInstance(expected_health_comp, HealthComponent)
+    
+    def test_build_character_impl(self):
+        builder = self.world.get_builder(CharacterBuilder)
+        entity = builder.build_character(health=100, pos=(100, 100))
+        self.assertIsInstance(entity, Entity)
+        
+        health_comp = entity.get_component(HealthComponent)
+        self.assertEqual(health_comp.health, 100)
+        self.assertEqual(health_comp.max_health, 100)
+
+        pos_comp = entity.get_component(PositionComponent)
+        self.assertEqual(pos_comp.x, 100)
+        self.assertEqual(pos_comp.y, 100)
+
 
 class TestSystem(unittest.TestCase):
     def setUp(self) -> None:
@@ -309,6 +344,10 @@ class TestSystem(unittest.TestCase):
         entity = self.world.create_entity()
         expected_entity = self.pos_system.get_entity(entity.id)
         self.assertEqual(entity, expected_entity)
+
+    def test_get_builder(self):
+        builder = self.pos_system.get_builder(CharacterBuilder)
+        self.assertIsInstance(builder, CharacterBuilder)
 
     def test_get_required_entities(self):
         entity_1 = self.world.create_entity([PositionComponent(0,0)])
