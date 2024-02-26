@@ -3,9 +3,9 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
-    from entity_admin import EcsAdmin
-    from component import Component
-    from entity import Entity
+    from .entity_admin import EcsAdmin
+    from .component import Component
+    from .entity import Entity
 
 class Builder(ABC):
     def __init__(self, ecs_admin: EcsAdmin) -> None:

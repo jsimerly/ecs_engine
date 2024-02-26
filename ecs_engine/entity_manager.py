@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from .entity import Entity
 
 if TYPE_CHECKING:
-    from component import Component
+    from .component import Component
 
 class EntityManager:
     def __init__(self, max_entities: int) -> None:

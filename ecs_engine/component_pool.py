@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Type, TypeVar
 
 if TYPE_CHECKING:
-    from component import Component
-    from entity import Entity
+    from .component import Component
+    from .entity import Entity
     T = TypeVar('T', bound=Component)
 
 class ComponentPool:

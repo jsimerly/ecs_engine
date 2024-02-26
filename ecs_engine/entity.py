@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Type, TypeVar
 
 if TYPE_CHECKING:
-    from component import Component
+    from .component import Component
     T = TypeVar('T', bound=Component)
 
 class Entity:

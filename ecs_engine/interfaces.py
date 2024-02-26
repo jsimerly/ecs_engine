@@ -27,6 +27,13 @@ class IEcsAdmin(ABC):
     def get_builder(self, builder_type: Type[Builder]) -> Builder:
         ...
 
+    @abstractmethod
+    def attach_component_to_entity(self, entity: Entity, component: Component):
+        ...
+
+    @abstractmethod
+    def destory_entity(self, entity: Entity):
+        ...
 class IEventBus(ABC):
     @abstractmethod
     def subscribe(self, event_name: str, callback: Callable):

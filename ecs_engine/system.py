@@ -4,13 +4,14 @@ from typing import TYPE_CHECKING, Type, Callable, TypeVar
 from functools import wraps
 
 if TYPE_CHECKING:
-    from component import Component, SingletonComponent
-    from component_pool import ComponentPool
-    from entity import Entity
-    from interfaces import IEventBus, IEcsAdmin
-    from entity_builder import Builder
+    from .component import Component, SingletonComponent
+    from .component_pool import ComponentPool
+    from .entity import Entity
+    from .interfaces import IEventBus, IEcsAdmin
+    from .entity_builder import Builder
 
     T = TypeVar('T', bound=SingletonComponent)
+    B = TypeVar('B', bound=Builder)
 
 def subscribe_to_event(event_name):
     '''
@@ -116,8 +117,14 @@ class System(ABC):
         '''
         return self.ecs_admin.get_entity(entity_id)
     
-    def get_builder(self, builder_type: Type[Builder]) -> Builder:
+    def get_builder(self, builder_type: Type[B]) -> B:
         return self.ecs_admin.get_builder(builder_type)
+    
+    def attach_component_to_entity(self, entity: Entity, component: Component):
+        self.ecs_admin.attach_component_to_entity(entity, component)
+
+    def destory_entity(self, entity: Entity):
+        self.ecs_admin.destory_entity(entity)
         
     def get_required_entities(self) -> list[Entity]:
         '''
