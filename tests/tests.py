@@ -348,6 +348,19 @@ class TestSystem(unittest.TestCase):
     def test_get_builder(self):
         builder = self.pos_system.get_builder(CharacterBuilder)
         self.assertIsInstance(builder, CharacterBuilder)
+        
+    def test_attach_component_to_entity(self):
+        entity = Entity(0)
+        component = HealthComponent(100)
+        self.health_system.attach_component_to_entity(entity, component)
+
+        health_component_pool = self.world.get_component_pool(HealthComponent)
+        self.assertIsInstance(health_component_pool, ComponentPool)
+        self.assertEqual(health_component_pool.component_type, HealthComponent)
+        self.assertTrue(health_component_pool.contains_entity(entity))       
+
+    def test_destory_entity(self):
+        ...
 
     def test_get_required_entities(self):
         entity_1 = self.world.create_entity([PositionComponent(0,0)])
@@ -399,6 +412,41 @@ class TestEcsAdmin(unittest.TestCase):
         with self.assertRaises(KeyError):
             self.world.get_entity(entity)
 
+    def test_remove_component(self):
+        builder = self.world.get_builder(CharacterBuilder)
+        char_entity = builder.build_character(100, (100, 100))
+        hp_comp_pool = self.world.get_component_pool(HealthComponent)
+
+        self.assertTrue(char_entity.has_component(HealthComponent))
+        self.assertEqual(len(hp_comp_pool.active), 1)
+        self.assertEqual(len(hp_comp_pool.pool), 0)
+
+        hp_comp = char_entity.get_component(HealthComponent)
+        self.world.remove_component(char_entity, hp_comp)
+
+        self.assertFalse(char_entity.has_component(HealthComponent))
+        self.assertEqual(len(hp_comp_pool.active), 0)
+        self.assertEqual(len(hp_comp_pool.pool), 1)
+      
+
+    def test_destroy_entity(self):
+        builder = self.world.get_builder(CharacterBuilder)
+        char_entity = builder.build_character(100, (100, 100))
+        entity_id = char_entity.id
+        hp_comp_pool = self.world.get_component_pool(HealthComponent)
+
+        self.assertEqual(len(hp_comp_pool.active), 1)
+        self.assertEqual(len(hp_comp_pool.pool), 0)
+        self.assertEqual(len(self.world.entity_map), 1)
+        self.assertEqual(len(self.world.entity_manager.destroyed_entity_ids), 0)
+    
+        self.world.destroy_entity(entity=char_entity)
+        self.assertEqual(len(hp_comp_pool.active), 0)
+        self.assertEqual(len(hp_comp_pool.pool), 1)
+        self.assertEqual(len(self.world.entity_map), 0)
+        self.assertEqual(len(self.world.entity_manager.destroyed_entity_ids), 1)
+        self.assertIn(entity_id, self.world.entity_manager.destroyed_entity_ids)
+        
     def test_attach_component(self):
         entity = Entity(0)
         component = HealthComponent(100)

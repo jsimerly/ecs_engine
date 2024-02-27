@@ -32,8 +32,13 @@ class IEcsAdmin(ABC):
         ...
 
     @abstractmethod
-    def destory_entity(self, entity: Entity):
+    def destroy_entity(self, entity: Entity):
         ...
+
+    @abstractmethod
+    def remove_component(self, entity: Entity, component: Component):
+        ...
+    
 class IEventBus(ABC):
     @abstractmethod
     def subscribe(self, event_name: str, callback: Callable):

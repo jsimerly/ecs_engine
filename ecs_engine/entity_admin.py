@@ -154,6 +154,10 @@ class EcsAdmin(IEcsAdmin):
             The Entity instance with the specified ID.
         '''
         return self.entity_map[entity_id]
+    def remove_component(self, entity: Entity, component: Component):
+        component_pool = self.component_pools[type(component)]
+        entity._remove_component(type(component))
+        component_pool.release_component(component)
 
     def destroy_entity(self, entity: Entity):
         '''
@@ -183,6 +187,8 @@ class EcsAdmin(IEcsAdmin):
         if component_pool is None:
             component_pool = self.create_component_pool(type(component))
         component_pool.add_entity(entity)
+
+
 
     def get_builder(self, builder_type: Type[B]) -> B:
         '''

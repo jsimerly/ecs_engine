@@ -120,11 +120,14 @@ class System(ABC):
     def get_builder(self, builder_type: Type[B]) -> B:
         return self.ecs_admin.get_builder(builder_type)
     
+    def remove_component(self, entity: Entity, component: Component):
+        self.ecs_admin.remove_component(entity, component)
+    
     def attach_component_to_entity(self, entity: Entity, component: Component):
         self.ecs_admin.attach_component_to_entity(entity, component)
 
-    def destory_entity(self, entity: Entity):
-        self.ecs_admin.destory_entity(entity)
+    def destroy_entity(self, entity: Entity):
+        self.ecs_admin.destroy_entity(entity)
         
     def get_required_entities(self) -> list[Entity]:
         '''
