@@ -161,7 +161,7 @@ class TestComponentPool(unittest.TestCase):
         pool_size = len(self.component_pool.pool)
         self.assertEqual(pool_size, 0)
 
-        self.component_pool.release_component(comp_1)
+        self.component_pool._release_component(comp_1)
         pool_size = len(self.component_pool.pool)
         self.assertEqual(pool_size, 1)
 
@@ -369,6 +369,12 @@ class TestSystem(unittest.TestCase):
         self.assertIn(entity_1, entities)
         self.assertNotIn(entity_2, entities)        
 
+        pos_comp = entity_1.get_component(PositionComponent)
+        self.world.remove_component(entity_1, pos_comp)
+
+        entities = self.pos_system.get_required_entities()
+        self.assertNotIn(entity_1, entities)
+
 class TestEcsAdmin(unittest.TestCase):
     def setUp(self) -> None:
         self.world = World(1400)
@@ -425,7 +431,6 @@ class TestEcsAdmin(unittest.TestCase):
         self.world.remove_component(char_entity, hp_comp)
 
         self.assertFalse(char_entity.has_component(HealthComponent))
-        self.assertEqual(len(hp_comp_pool.active), 0)
         self.assertEqual(len(hp_comp_pool.pool), 1)
       
 

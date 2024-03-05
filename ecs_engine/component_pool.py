@@ -51,18 +51,16 @@ class ComponentPool:
             self.active.append(instance)
             return instance
         
-    def release_component(self, instance: Component):
+    def _release_component(self, instance: Component):
         '''
         Releases a component instance, making it available for reuse.
         
         Args:
             instance (Component): The component instance to release.
         '''
-        self.active.remove(instance)
+        if instance in self.active: self.active.remove(instance)
         self.pool.append(instance)
         
-
-
     def add_entity(self, entity: Entity):
         '''
         Adds an entity to the component pool if it has the required component.
@@ -106,7 +104,7 @@ class ComponentPool:
         '''
         if self.contains_entity(entity):
             component_instance = entity.get_component(self.component_type)
-            self.release_component(component_instance)
+            self._release_component(component_instance)
 
             dense_index = self.sparse[entity.id]
             last_entity_id = self.entity_ids[-1]

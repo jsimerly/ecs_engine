@@ -140,7 +140,7 @@ class System(ABC):
         required_component_pools = self.get_component_pools()
         if required_component_pools:
             main_pool = required_component_pools.pop()
-
+        
             for entity in main_pool.entities:
                 add_entity = True
 
