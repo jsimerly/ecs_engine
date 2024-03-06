@@ -332,10 +332,6 @@ class TestSystem(unittest.TestCase):
         self.world.event_bus.publish('update_time_step', timestep=1/60)
         self.assertTrue(self.health_system.updated)
 
-    def test_get_component_pools(self):
-        required_component_pools = self.pos_system.get_component_pools()
-        self.assertTrue(any(component_pool.component_type in self.pos_system.required_components for component_pool in required_component_pools))
-
     def test_get_singleton_component(self):
         singleton_component = self.pos_system.get_singleton_component(InputComponent)
         self.assertIsInstance(singleton_component, InputComponent)

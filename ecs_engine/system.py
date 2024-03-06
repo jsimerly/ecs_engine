@@ -78,21 +78,6 @@ class System(ABC):
             **kwargs: Arbitrary keyword arguments passed to the event handlers.
         '''
         self.event_bus.publish(event_name, **kwargs)
-
-    def get_component_pools(self) -> list[ComponentPool] | None:
-        '''
-        Retrieves the component pools for the system's required components.
-        
-        Returns:
-            A list of ComponentPool instances for the required components, sorted by the number of entities.
-        '''
-        required_component_pools = []
-        for component_type in self._required_components:
-            component_pool = self.ecs_admin.get_component_pool(component_type)
-            if component_pool:
-                required_component_pools.append(component_pool)
-                sorted_component_pools = sorted(required_component_pools, key=lambda pool: len(pool.entity_ids))
-                return sorted_component_pools
             
     def get_singleton_component(self, component: Type[T]) -> T:
         '''
@@ -138,8 +123,15 @@ class System(ABC):
             A list of Entity instances that meet the system's component requirements.
         '''
         return self.ecs_admin.get_entities_intersect(self.required_components)
+    
+    def get_entities_intersect(self, component_types=list[Type[Component]]) -> list[Entity]:
+        return self.ecs_admin.get_entities_intersect(component_types)
+    
+    def get_entities_union(self, component_types=list[Type[Component]]) -> list[Entity]:
+        return self.ecs_admin.get_entities_union(component_types)
 
         
+    
     def __str__(self) -> str:
         return f"{self.__class__.__name__}"
     
