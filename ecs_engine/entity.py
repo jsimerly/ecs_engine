@@ -77,8 +77,8 @@ class Entity:
         return component_type in self.components
     
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}"
+        return f"{self.__class__} {self.id}"
     
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}"
+        return f"{self.__class__.__name__} {self.id}"
     

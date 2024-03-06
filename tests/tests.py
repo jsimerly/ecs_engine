@@ -460,7 +460,54 @@ class TestEcsAdmin(unittest.TestCase):
         health_component_pool = self.world.get_component_pool(HealthComponent)
         self.assertIsInstance(health_component_pool, ComponentPool)
         self.assertEqual(health_component_pool.component_type, HealthComponent)
-        self.assertTrue(health_component_pool.contains_entity(entity))       
+        self.assertTrue(health_component_pool.contains_entity(entity))   
+
+    def test_get_entities_intersect(self):
+        entity_1 = self.world.create_entity([PositionComponent(0,0)])
+        entity_2 = self.world.create_entity([PositionComponent(0,0), HealthComponent(100)])
+        pos_entities = self.world.get_entities_intersect([PositionComponent])
+        hp_entities = self.world.get_entities_intersect([HealthComponent])
+        both_entities = self.world.get_entities_intersect([HealthComponent, PositionComponent])
+
+        self.assertIn(entity_1, pos_entities)
+        self.assertIn(entity_2, pos_entities)      
+
+        self.assertNotIn(entity_1, hp_entities)
+        self.assertIn(entity_2, hp_entities)
+
+        self.assertNotIn(entity_1, both_entities) #difference between union
+        self.assertIn(entity_2, both_entities)
+
+        pos_comp = entity_1.get_component(PositionComponent)
+        self.world.remove_component(entity_1, pos_comp)
+
+        pos_entities = self.world.get_entities_intersect([PositionComponent])
+        self.assertNotIn(entity_1, pos_entities)
+        self.assertIn(entity_2, pos_entities)   
+        
+
+    def test_get_entities_union(self):
+        entity_1 = self.world.create_entity([PositionComponent(0,0)])
+        entity_2 = self.world.create_entity([PositionComponent(0,0), HealthComponent(100)])
+        pos_entities = self.world.get_entities_union([PositionComponent])
+        hp_entities = self.world.get_entities_union([HealthComponent])
+        both_entities = self.world.get_entities_union([HealthComponent, PositionComponent])
+
+        self.assertIn(entity_1, pos_entities)
+        self.assertIn(entity_2, pos_entities)      
+
+        self.assertNotIn(entity_1, hp_entities)
+        self.assertIn(entity_2, hp_entities)
+
+        self.assertIn(entity_1, both_entities) #difference between interection
+        self.assertIn(entity_2, both_entities)
+
+        pos_comp = entity_1.get_component(PositionComponent)
+        self.world.remove_component(entity_1, pos_comp)
+
+        pos_entities = self.world.get_entities_intersect([PositionComponent])
+        self.assertNotIn(entity_1, pos_entities)
+        self.assertIn(entity_2, pos_entities)   
 
 if __name__ == '__main__':
     unittest.main()

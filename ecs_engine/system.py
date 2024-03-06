@@ -7,8 +7,9 @@ if TYPE_CHECKING:
     from .component import Component, SingletonComponent
     from .component_pool import ComponentPool
     from .entity import Entity
-    from .interfaces import IEventBus, IEcsAdmin
+    from .interfaces import IEventBus
     from .entity_builder import Builder
+    from .entity_admin import EcsAdmin
 
     T = TypeVar('T', bound=SingletonComponent)
     B = TypeVar('B', bound=Builder)
@@ -45,14 +46,14 @@ class System(ABC):
     '''
     required_components = []
 
-    def __init__(self, ecs_admin: IEcsAdmin, event_bus: IEventBus):
+    def __init__(self, ecs_admin: EcsAdmin, event_bus: IEventBus):
         '''
         Args:
             ecs_admin (IEcsAdmin): The central ECS administration interface.
             event_bus (IEventBus): The event bus for event communication.
         '''
         self._required_components: list[Type[Component]] = self.required_components
-        self.ecs_admin: IEcsAdmin = ecs_admin
+        self.ecs_admin: EcsAdmin= ecs_admin
         self.event_bus: IEventBus = event_bus
         self.subscribe_to_events()
             
@@ -136,25 +137,9 @@ class System(ABC):
         Returns:
             A list of Entity instances that meet the system's component requirements.
         '''
-        entities: list[Entity] = []
-        required_component_pools = self.get_component_pools()
-        if required_component_pools:
-            main_pool = required_component_pools.pop()
+        return self.ecs_admin.get_entities_intersect(self.required_components)
+
         
-            for entity in main_pool.entities:
-                add_entity = True
-
-                for remaining_component in required_component_pools:
-                    if not entity.has_component(remaining_component.component_type):
-                        add_entity = False
-                        break
-
-                if add_entity:
-                    entities.append(entity)
-                    
-        return entities
-        
-
     def __str__(self) -> str:
         return f"{self.__class__.__name__}"
     

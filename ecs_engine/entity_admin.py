@@ -155,6 +155,52 @@ class EcsAdmin(IEcsAdmin):
         '''
         return self.entity_map[entity_id]
     
+    def get_entities_intersect(self, component_types: list[Type[Component]]) -> list[Entity]:
+        component_pools = self._get_component_pools(component_types)
+        entities: list[Entity] = []
+
+        if component_pools:
+            main_pool = component_pools.pop()
+
+            for entity in main_pool.entities:
+                add_entity = True
+
+                for remaining_component_pool in component_pools:
+                    if not entity.has_component(remaining_component_pool.component_type):
+                        add_entity = False
+                        break
+
+                if add_entity:
+                    entities.append(entity)
+
+        return entities
+    
+    def get_entities_union(self, component_types: list[Type[Component]]) -> list[Entity]:
+        component_pools = self._get_component_pools(component_types)
+        entities: set[Entity] = set()
+
+        for component_pool in component_pools:
+            for entity in component_pool.entities:
+                if entity.has_component(component_pool.component_type):
+                    entities.add(entity)
+        return list(entities)
+
+    def _get_component_pools(self, components_types: list[Type[Component]]) -> list[ComponentPool]:
+        '''
+        Retrieves the correlating component pools for the component types.
+        
+        Returns:
+            A list of ComponentPool instances for the required components, sorted by the number of entities.
+        '''
+        all_component_pools = []
+        for component_type in components_types:
+            component_pool = self.get_component_pool(component_type)
+            if component_pool:
+                all_component_pools.append(component_pool)
+
+        sorted_component_pools = sorted(all_component_pools, key=lambda pool: len(pool.entity_ids))
+        return sorted_component_pools
+        
     def remove_component(self, entity: Entity, component: Component):
         component_pool = self.component_pools[type(component)]
         entity._remove_component(type(component))

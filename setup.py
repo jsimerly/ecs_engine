@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='ecs_engine',
-    version='0.4.3',
+    version='0.5.0',
     packages=find_packages(),
     install_requires=[],
     
