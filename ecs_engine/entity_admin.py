@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Type, TypeVar
 from .entity import Entity
-from .events import EventBus
+from .events import EventBus, subscribe_to_events
 from .component_pool import ComponentPool
 from .interfaces import IEcsAdmin
 from .entity_manager import EntityManager
@@ -65,6 +65,8 @@ class EcsAdmin(IEcsAdmin):
         self.entity_map: dict[int, Entity] = {}
         self.components: list[Component] = []
         self.component_pools: dict[Type[Component], ComponentPool] = {}
+
+        subscribe_to_events(self)
 
     def __repr__(self) -> str:
         return str(self.__class__)

@@ -2,6 +2,7 @@ from __future__ import annotations
 from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING, Type, Callable, TypeVar
 from functools import wraps
+from .events import subscribe_to_event, subscribe_to_events
 
 if TYPE_CHECKING:
     from .component import Component, SingletonComponent
@@ -13,24 +14,6 @@ if TYPE_CHECKING:
 
     T = TypeVar('T', bound=SingletonComponent)
     B = TypeVar('B', bound=Builder)
-
-def subscribe_to_event(event_name):
-    '''
-    Decorator to mark a System method for subscription to a specific event.
-    
-    Args:
-        event_name (str): The name of the event to subscribe to.
-        
-    Returns:
-        The decorated function with an added '_event_subscriptions' attribute.
-    '''
-    def decorator(func):
-        if not hasattr(func, '_event_subscriptions'):
-            func._event_subscriptions = []
-        func._event_subscriptions.append(event_name)
-        return func
-    return decorator
-
 class System(ABC):
     '''
     Abstract base class for systems in an Entity Component System (ECS) framework.
@@ -55,19 +38,9 @@ class System(ABC):
         self._required_components: list[Type[Component]] = self.required_components
         self.ecs_admin: EcsAdmin= ecs_admin
         self.event_bus: IEventBus = event_bus
-        self.subscribe_to_events()
+        subscribe_to_events(self)
             
         super().__init__()
-
-    def subscribe_to_events(self):
-        '''
-        Subscribes the system to events based on methods decorated with `subscribe_to_event`.
-        '''
-        for attr_name in dir(self):
-            attr = getattr(self, attr_name)
-            if callable(attr) and hasattr(attr, '_event_subscriptions'):
-                for event_name in attr._event_subscriptions:
-                    self.event_bus.subscribe(event_name, getattr(self, attr_name))
     
     def publish_event(self, event_name: str, **kwargs):
         '''
@@ -112,6 +85,9 @@ class System(ABC):
     def attach_component_to_entity(self, entity: Entity, component: Component):
         self.ecs_admin.attach_component_to_entity(entity, component)
 
+    def create_entity(self, componenets=None) -> Entity:
+        return self.ecs_admin.create_entity(componenets)
+
     def destroy_entity(self, entity: Entity):
         self.ecs_admin.destroy_entity(entity)
         
@@ -124,13 +100,12 @@ class System(ABC):
         '''
         return self.ecs_admin.get_entities_intersect(self.required_components)
     
-    def get_entities_intersect(self, component_types=list[Type[Component]]) -> list[Entity]:
+    def get_entities_intersect(self, component_types:list[Type[Component]]) -> list[Entity]:
         return self.ecs_admin.get_entities_intersect(component_types)
     
-    def get_entities_union(self, component_types=list[Type[Component]]) -> list[Entity]:
+    def get_entities_union(self, component_types:list[Type[Component]]) -> list[Entity]:
         return self.ecs_admin.get_entities_union(component_types)
 
-        
     
     def __str__(self) -> str:
         return f"{self.__class__.__name__}"

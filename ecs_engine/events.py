@@ -1,6 +1,32 @@
 from typing import Callable
 from .interfaces import IEventBus
 
+def subscribe_to_event(event_name):
+    '''
+    Decorator to mark a System method for subscription to a specific event.
+    
+    Args:
+        event_name (str): The name of the event to subscribe to.
+        
+    Returns:
+        The decorated function with an added '_event_subscriptions' attribute.
+    '''
+    def decorator(func):
+        if not hasattr(func, '_event_subscriptions'):
+            func._event_subscriptions = []
+        func._event_subscriptions.append(event_name)
+        return func
+    return decorator
+
+def subscribe_to_events(cls):
+    '''
+    Subscribes the system to events based on methods decorated with `subscribe_to_event`.
+    '''
+    for attr_name in dir(cls):
+        attr = getattr(cls, attr_name)
+        if callable(attr) and hasattr(attr, '_event_subscriptions'):
+            for event_name in attr._event_subscriptions:
+                cls.event_bus.subscribe(event_name, getattr(cls, attr_name))
 class EventBus(IEventBus):
     '''
     Implements a simple event bus for an event-driven architecture, facilitating communication
