@@ -90,7 +90,7 @@ class EcsAdmin(IEcsAdmin):
         Returns:
             An instance of the specified singleton component type.
         '''
-        return self._singleton_components[component_type]
+        return self._singleton_components.get(component_type)
 
     def create_component_pool(self, component_type: Type[Component]) -> ComponentPool:
         '''
